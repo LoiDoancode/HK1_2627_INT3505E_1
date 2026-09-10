@@ -1,0 +1,10 @@
+# Bỏ qua môi trường ảo .venv trong api_session_1
+.venv/
+api_session_1/.venv/
+
+# Thư mục cache của Python
+__pycache__/
+*.py[cod]
+
+# Cấu hình IDE & file ẩn
+.antigravity/
