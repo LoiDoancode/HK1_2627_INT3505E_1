@@ -1,4 +1,4 @@
-# Bỏ qua môi trường ảo .venv trong api_session_1
+# môi trường ảo .venv trong api_session_1
 .venv/
 api_session_1/.venv/
 
