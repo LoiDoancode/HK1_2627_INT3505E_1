@@ -47,37 +47,51 @@
 #     app.run(host='127.0.0.1', port=5000, debug=True)
 
 #BAI4
-from flask.cli import find_app_by_string
+# from flask.cli import find_app_by_string
+# from flask import Flask, jsonify, request
+# from uuid import uuid4
+
+# app = Flask(__name__)
+
+# BOOKS = [
+#     {"id": "abcd-1234"},
+#     {"id": "abcd-1235",}
+# ]
+
+# def find_by_string(book_id):
+#     for book in BOOKS:
+#         if book['id'] == book_id:
+#             return book
+#     return None
+
+# @app.route('/books/<book_id>', methods=['GET'])
+# def get_book(book_id):
+#     book = find_by_string(book_id)
+#     if book is None:
+#         return jsonify({'error': 'book not found'}), 400
+#     return jsonify(book), 200
+
+# @app.route('/items/<int:item_id>', methods=['GET'])
+# def get_item(item_id):
+#     return jsonify({'id': item_id}), 200
+
+# @app.route('/books', methods=['GET'])
+# def list_book():
+#     limit = int(request.args.get('limit', 20))
+#     q = request.args.get('q', '').strip().lower()
+#     items = [b for b in BOOKS if q in b['t'].lower()]
+#     return jsonify({'items': items}), 200
+
+#BAI5
 from flask import Flask, jsonify, request
-from uuid import uuid4
-
 app = Flask(__name__)
-
-BOOKS = [
-    {"id": "abcd-1234"},
-    {"id": "abcd-1235",}
-]
-
-def find_by_string(book_id):
-    for book in BOOKS:
-        if book['id'] == book_id:
-            return book
-    return None
-
-@app.route('/books/<book_id>', methods=['GET'])
-def get_book(book_id):
-    book = find_by_string(book_id)
-    if book is None:
-        return jsonify({'error': 'book not found'}), 400
-    return jsonify(book), 200
-
-@app.route('/items/<int:item_id>', methods=['GET'])
-def get_item(item_id):
-    return jsonify({'id': item_id}), 200
-
-@app.route('/books', methods=['GET'])
-def list_book():
-    limit = int(request.args.get('limit', 20))
-    q = request.args.get('q', '').strip().lower()
-    items = [b for b in BOOKS if q in b['t'].lower()]
-    return jsonify({'items': items}), 200
+ORDERS = {}
+@app.route('/orders/<id>', method=['DELETE'])
+def delete_order(order_id):
+    order = ORDERS.get(order_id)
+    if order is None:
+        return {'error': 'not found'}, 404
+    if order["status"] in('shipped', 'delivered'):
+        return {'error': 'cannot delete'}, 409
+    ORDERS.pop(order_id, None)
+    return {}, 204
