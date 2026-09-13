@@ -83,15 +83,65 @@
 #     return jsonify({'items': items}), 200
 
 #BAI5
+# from flask import Flask, jsonify, request
+# app = Flask(__name__)
+# ORDERS = {}
+# @app.route('/orders/<id>', method=['DELETE'])
+# def delete_order(order_id):
+#     order = ORDERS.get(order_id)
+#     if order is None:
+#         return {'error': 'not found'}, 404
+#     if order["status"] in('shipped', 'delivered'):
+#         return {'error': 'cannot delete'}, 409
+#     ORDERS.pop(order_id, None)
+#     return {}, 204
+
+#BAI6
 from flask import Flask, jsonify, request
+from uuid import uuid4
+
 app = Flask(__name__)
-ORDERS = {}
-@app.route('/orders/<id>', method=['DELETE'])
-def delete_order(order_id):
-    order = ORDERS.get(order_id)
-    if order is None:
-        return {'error': 'not found'}, 404
-    if order["status"] in('shipped', 'delivered'):
-        return {'error': 'cannot delete'}, 409
-    ORDERS.pop(order_id, None)
-    return {}, 204
+_next = 1
+STUDENTS = [{"id": 1, "name": 'Loi', 'gpa': 3.0}]
+def find_student(student_id):
+    return next((s for s in STUDENTS if s['id'] == student_id), None)
+
+@app.route('/students', methods=['GET'])
+def list_students():
+    n = int(request.args.get('limit', 100))
+    return jsonify(STUDENTS[:n]), 200
+
+@app.route('/students/<int:sid>', methods=['GET'])
+def get_students(sid):
+    student = find_student(sid)
+    if student is None:
+        return jsonify({'error': 'not found'}), 404
+    return jsonify(student), 200
+
+@app.route('/students', methods=['POST'])
+def create_students():
+    global _next
+    body = request.get_json(silent=True) or{}
+    name, gpa = body.get('name'), body.get('gpa')
+    if not name and not gpa:
+        return jsonify({'error': 'need  name and gpa'}), 400
+    student = {'id': _next+1, 'name': name, 'gpa': gpa}
+    _next +=1
+    STUDENTS.append(student)
+    return jsonify(student), 201, {'Location': f"/students/{student['id']}"}
+
+@app.route('/students/<int:sid>', methods=['PUT', 'DELETE'])
+def modify_student(sid):
+    student = find_student(sid)
+    if not student:
+        return jsonify({'error': 'not found'}), 404
+    if request.method == 'PUT':
+        data = request.get_json(silent=True) or {}
+        student.update({k: v for k, v in data.items() if k in ['name', 'gpa'] })
+        return jsonify(student), 200
+    STUDENTS.remove(student)
+    return '', 204
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=5000, debug=True)
+        
