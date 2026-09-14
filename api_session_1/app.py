@@ -55,7 +55,7 @@
 
 # BOOKS = [
 #     {"id": "abcd-1234"},
-#     {"id": "abcd-1235",}
+#     {"id": "abcd-1235"},
 # ]
 
 # def find_by_string(book_id):
@@ -108,8 +108,16 @@ def find_student(student_id):
 
 @app.route('/students', methods=['GET'])
 def list_students():
+    q = request.args.get('L', '').strip().lower()
+    sort_by = request.args.get('sort','').strip().lower()
     n = int(request.args.get('limit', 100))
-    return jsonify(STUDENTS[:n]), 200
+    if q:
+        results = [s for s in STUDENTS if q in s['name'].lower()]
+    else:
+        results = list(STUDENTS)
+    if sort_by == 'gpa':
+        results.sort(key=lambda x: x['gpa'])
+    return jsonify(results[:n]), 200
 
 @app.route('/students/<int:sid>', methods=['GET'])
 def get_students(sid):
@@ -125,6 +133,12 @@ def create_students():
     name, gpa = body.get('name'), body.get('gpa')
     if not name and not gpa:
         return jsonify({'error': 'need  name and gpa'}), 400
+    try:
+        gpa = float(gpa)
+        if gpa < 3.0:
+            return jsonify({'error': 'gpa phai >= 3.0'}), 400
+    except(ValueError, TypeError):
+        return jsonify({'error': 'GPA phai la so thuc'}), 400
     student = {'id': _next+1, 'name': name, 'gpa': gpa}
     _next +=1
     STUDENTS.append(student)
