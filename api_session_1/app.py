@@ -81,6 +81,42 @@
 #     q = request.args.get('q', '').strip().lower()
 #     items = [b for b in BOOKS if q in b['t'].lower()]
 #     return jsonify({'items': items}), 200
+#BAI4_QLSV
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+STUDENTS = [
+    {"id": "abcd-1234", "gpa": 3.2},
+    {"id": "abcd-1235", "gpa": 3.8},
+]
+
+def find_by_string(student_id):
+    for student in STUDENTS:
+        if student['id'] == student_id:
+            return student
+    return None
+
+@app.route('/students/<student_id>', methods=['GET'])
+def get_student(student_id):
+    student = find_by_string(student_id)
+    if student is None:
+        return jsonify({'error': 'student not found'}), 404 
+    return jsonify(student), 200
+
+@app.route('/items/<int:item_id>', methods=['GET'])
+def get_item(item_id):
+    return jsonify({'id': item_id}), 200
+
+@app.route('/students', methods=['GET'])
+def list_students():
+    limit = int(request.args.get('limit', 20))
+    q = request.args.get('q', '').strip().lower()
+    items = [s for s in STUDENTS if q in s['id'].lower()]
+    return jsonify({'items': items[:limit]}), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 #BAI5
 # from flask import Flask, jsonify, request
@@ -96,66 +132,66 @@
 #     ORDERS.pop(order_id, None)
 #     return {}, 204
 
-#BAI6
-from flask import Flask, jsonify, request
-from uuid import uuid4
+# #BAI6
+# from flask import Flask, jsonify, request
+# from uuid import uuid4
 
-app = Flask(__name__)
-_next = 1
-STUDENTS = [{"id": 1, "name": 'Loi', 'gpa': 3.0}]
-def find_student(student_id):
-    return next((s for s in STUDENTS if s['id'] == student_id), None)
+# app = Flask(__name__)
+# _next = 1
+# STUDENTS = [{"id": 1, "name": 'Loi', 'gpa': 3.0}]
+# def find_student(student_id):
+#     return next((s for s in STUDENTS if s['id'] == student_id), None)
 
-@app.route('/students', methods=['GET'])
-def list_students():
-    q = request.args.get('L', '').strip().lower()
-    sort_by = request.args.get('sort','').strip().lower()
-    n = int(request.args.get('limit', 100))
-    if q:
-        results = [s for s in STUDENTS if q in s['name'].lower()]
-    else:
-        results = list(STUDENTS)
-    if sort_by == 'gpa':
-        results.sort(key=lambda x: x['gpa'])
-    return jsonify(results[:n]), 200
+# @app.route('/students', methods=['GET'])
+# def list_students():
+#     q = request.args.get('L', '').strip().lower()
+#     sort_by = request.args.get('sort','').strip().lower()
+#     n = int(request.args.get('limit', 100))
+#     if q:
+#         results = [s for s in STUDENTS if q in s['name'].lower()]
+#     else:
+#         results = list(STUDENTS)
+#     if sort_by == 'gpa':
+#         results.sort(key=lambda x: x['gpa'])
+#     return jsonify(results[:n]), 200
 
-@app.route('/students/<int:sid>', methods=['GET'])
-def get_students(sid):
-    student = find_student(sid)
-    if student is None:
-        return jsonify({'error': 'not found'}), 404
-    return jsonify(student), 200
+# @app.route('/students/<int:sid>', methods=['GET'])
+# def get_students(sid):
+#     student = find_student(sid)
+#     if student is None:
+#         return jsonify({'error': 'not found'}), 404
+#     return jsonify(student), 200
 
-@app.route('/students', methods=['POST'])
-def create_students():
-    global _next
-    body = request.get_json(silent=True) or{}
-    name, gpa = body.get('name'), body.get('gpa')
-    if not name and not gpa:
-        return jsonify({'error': 'need  name and gpa'}), 400
-    try:
-        gpa = float(gpa)
-        if gpa < 3.0:
-            return jsonify({'error': 'gpa phai >= 3.0'}), 400
-    except(ValueError, TypeError):
-        return jsonify({'error': 'GPA phai la so thuc'}), 400
-    student = {'id': _next+1, 'name': name, 'gpa': gpa}
-    _next +=1
-    STUDENTS.append(student)
-    return jsonify(student), 201, {'Location': f"/students/{student['id']}"}
+# @app.route('/students', methods=['POST'])
+# def create_students():
+#     global _next
+#     body = request.get_json(silent=True) or{}
+#     name, gpa = body.get('name'), body.get('gpa')
+#     if not name and not gpa:
+#         return jsonify({'error': 'need  name and gpa'}), 400
+#     try:
+#         gpa = float(gpa)
+#         if gpa < 3.0:
+#             return jsonify({'error': 'gpa phai >= 3.0'}), 400
+#     except(ValueError, TypeError):
+#         return jsonify({'error': 'GPA phai la so thuc'}), 400
+#     student = {'id': _next+1, 'name': name, 'gpa': gpa}
+#     _next +=1
+#     STUDENTS.append(student)
+#     return jsonify(student), 201, {'Location': f"/students/{student['id']}"}
 
-@app.route('/students/<int:sid>', methods=['PUT', 'DELETE'])
-def modify_student(sid):
-    student = find_student(sid)
-    if not student:
-        return jsonify({'error': 'not found'}), 404
-    if request.method == 'PUT':
-        data = request.get_json(silent=True) or {}
-        student.update({k: v for k, v in data.items() if k in ['name', 'gpa'] })
-        return jsonify(student), 200
-    STUDENTS.remove(student)
-    return '', 204
+# @app.route('/students/<int:sid>', methods=['PUT', 'DELETE'])
+# def modify_student(sid):
+#     student = find_student(sid)
+#     if not student:
+#         return jsonify({'error': 'not found'}), 404
+#     if request.method == 'PUT':
+#         data = request.get_json(silent=True) or {}
+#         student.update({k: v for k, v in data.items() if k in ['name', 'gpa'] })
+#         return jsonify(student), 200
+#     STUDENTS.remove(student)
+#     return '', 204
 
-if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
+# if __name__ == '__main__':
+#     app.run(host='127.0.0.1', port=5000, debug=True)
         
