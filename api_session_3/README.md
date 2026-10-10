@@ -1,69 +1,81 @@
-# Thiết kế resource cho Blog API
+# Thiết Kế Kiến Trúc RESTful API Cho Nền Tảng Blog
 
-## BÀI TOÁN
-**Nền tảng blog đơn giản**
-Một blog cho phép người dùng đăng **bài viết (posts)**, mỗi bài có **bình luận (comments)** và gắn **thẻ (tags)**. Mỗi user có **hồ sơ** và đăng ký **theo dõi (follow)** tác giả khác. Hãy thiết kế cấu trúc endpoint đầy đủ.
+## 1. Bài Toán (Domain Requirements)
+Thiết kế hệ thống API cho nền tảng Blog đơn giản hỗ trợ các tính năng:
+- Quản lý tài khoản người dùng, hồ sơ cá nhân và tính năng **Follow / Unfollow** tác giả khác.
+- Quản lý **Bài viết (Posts)** bao gồm tạo, đọc, sửa, xóa bài viết.
+- Quản lý **Bình luận (Comments)** trên từng bài viết.
+- Gắn và quản lý **Thẻ (Tags)** phân loại cho bài viết.
 
-## THIẾT KẾ
+---
 
-### 1. Xác định **resources** trong miền
-Dựa trên bài toán, ta có thể xác định các đối tượng (resources) chính:
-- `users`: Thông tin tài khoản người dùng.
+## 2. Xác Định Resources & Phân Loại
+Hệ thống xác định 5 tài nguyên (resources) chính:
+- `users`: Tài khoản người dùng trong hệ thống.
 - `profiles`: Hồ sơ cá nhân của người dùng.
-- `posts`: Bài viết trên blog.
-- `comments`: Các bình luận trên bài viết.
+- `posts`: Bài viết đăng trên blog.
+- `comments`: Các bình luận thuộc bài viết.
 - `tags`: Thẻ phân loại bài viết.
 
-### 2. Phân loại collection / item / sub-resource
-- **Collection**: Tập hợp nhiều đối tượng cùng loại. Ví dụ: `/users`, `/posts`, `/tags`.
-- **Item**: Một đối tượng cụ thể trong Collection (xác định bằng ID). Ví dụ: `/users/{user_id}`, `/posts/{post_id}`.
-- **Sub-resource**: Đối tượng phụ thuộc vào một Item. Ví dụ:
-  - Hồ sơ của user: `/users/{user_id}/profile`
-  - Những người user đang theo dõi: `/users/{user_id}/following`
-  - Những người theo dõi user: `/users/{user_id}/followers`
-  - Các bình luận của bài viết: `/posts/{post_id}/comments`
-  - Các thẻ của bài viết: `/posts/{post_id}/tags`
+### Phân loại Cấu trúc Resource:
+- **Collection**: `/users`, `/posts`, `/tags`
+- **Item**: `/users/{user_id}`, `/posts/{post_id}`, `/tags/{tag_id}`
+- **Sub-resource**:
+  - Hồ sơ user: `/users/{user_id}/profile`
+  - Người theo dõi: `/users/{user_id}/followers`
+  - Đang theo dõi: `/users/{user_id}/following`
+  - Bình luận bài viết: `/posts/{post_id}/comments`
+  - Thẻ của bài viết: `/posts/{post_id}/tags`
 
-### 3. Vẽ sơ đồ cây endpoint và quyết định version segment
-Chúng ta sẽ sử dụng prefix version: `/api/v1`
+---
 
-**Sơ đồ Endpoint:**
+## 3. Versioning & Cấu Trúc Endpoint
+
+Hệ thống sử dụng Prefix Versioning: `/api/v1`
+
 ```text
 /api/v1
 ├── /users
-│   ├── POST: Tạo user mới
-│   ├── GET: Lấy danh sách users
+│   ├── GET                          : Lấy danh sách người dùng (có phân trang)
+│   ├── POST                         : Đăng ký tài khoản mới
 │   └── /{user_id}
-│       ├── GET: Lấy thông tin user
-│       ├── PUT/PATCH: Cập nhật thông tin user
-│       ├── DELETE: Xóa user
+│       ├── GET                      : Lấy thông tin chi tiết người dùng
+│       ├── PUT / PATCH              : Cập nhật thông tin người dùng
+│       ├── DELETE                   : Xóa tài khoản
 │       ├── /profile
-│       │   ├── GET: Lấy hồ sơ user
-│       │   └── PUT: Cập nhật hồ sơ user
+│       │   ├── GET                  : Xem hồ sơ cá nhân
+│       │   └── PUT / PATCH          : Cập nhật hồ sơ cá nhân
 │       ├── /followers
-│       │   └── GET: Lấy danh sách người theo dõi user này
+│       │   └── GET                  : Lấy danh sách người theo dõi (followers)
 │       └── /following
-│           ├── GET: Lấy danh sách những người user này đang theo dõi
-│           ├── POST: Bắt đầu theo dõi một user khác (truyền ID qua body)
-│           └── DELETE: Hủy theo dõi một user khác
+│           ├── GET                  : Lấy danh sách những người đang theo dõi
+│           ├── POST                 : Bắt đầu theo dõi một tác giả khác
+│           └── /{target_user_id}
+│               └── DELETE           : Hủy theo dõi (Unfollow)
+│
 ├── /posts
-│   ├── POST: Đăng bài viết mới
-│   ├── GET: Lấy danh sách bài viết
+│   ├── GET                          : Lấy danh sách bài viết (phân trang, lọc theo tag, tìm kiếm q)
+│   ├── POST                         : Đăng bài viết mới
 │   └── /{post_id}
-│       ├── GET: Lấy chi tiết bài viết
-│       ├── PUT/PATCH: Cập nhật bài viết
-│       ├── DELETE: Xóa bài viết
+│       ├── GET                      : Xem chi tiết bài viết
+│       ├── PUT / PATCH              : Cập nhật nội dung bài viết
+│       ├── DELETE                   : Xóa bài viết
 │       ├── /comments
-│       │   ├── POST: Thêm bình luận vào bài viết
-│       │   └── GET: Lấy danh sách bình luận của bài viết
+│       │   ├── GET                  : Lấy danh sách bình luận của bài viết
+│       │   ├── POST                 : Thêm bình luận vào bài viết
+│       │   └── /{comment_id}
+│       │       ├── PUT / PATCH      : Cập nhật bình luận
+│       │       └── DELETE           : Xóa bình luận
 │       └── /tags
-│           ├── POST: Gắn thẻ cho bài viết
-│           ├── GET: Lấy danh sách thẻ của bài viết
-│           └── DELETE /{tag_id}: Gỡ thẻ khỏi bài viết
+│           ├── GET                  : Lấy danh sách thẻ của bài viết
+│           ├── POST                 : Gắn thẻ cho bài viết
+│           └── /{tag_id}
+│               └── DELETE           : Gỡ thẻ khỏi bài viết
+│
 └── /tags
-    ├── POST: Tạo thẻ mới
-    ├── GET: Lấy danh sách các thẻ
+    ├── GET                          : Lấy danh sách tất cả các thẻ
+    ├── POST                         : Tạo thẻ mới
     └── /{tag_id}
-        └── GET: Xem chi tiết thẻ
-```
-
+        ├── GET                      : Lấy thông tin chi tiết của thẻ
+        ├── PUT / PATCH              : Cập nhật tên/thông tin thẻ
+        └── DELETE                   : Xóa thẻ

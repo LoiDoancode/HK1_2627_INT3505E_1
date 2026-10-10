@@ -83,6 +83,7 @@
 #     return jsonify({'items': items}), 200
 #BAI4_QLSV
 from flask import Flask, jsonify, request
+import hashlib, json
 
 app = Flask(__name__)
 
@@ -96,6 +97,8 @@ def find_by_string(student_id):
         if student['id'] == student_id:
             return student
     return None
+
+
 
 @app.route('/students/<student_id>', methods=['GET'])
 def get_student(student_id):
