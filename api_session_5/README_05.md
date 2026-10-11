@@ -1,4 +1,4 @@
-# Những Đánh Đổi Trong Thiết Kế OpenAPI Specification
+# 2 quyết định thiết kế khó nhất trong OpenAPI Specification
 
 ## 1. Cân bằng giữa Tính tái sử dụng (DRY) và Tính minh bạch qua `$ref`
 
@@ -11,7 +11,7 @@ Quyết định khó khăn đầu tiên là xác định mức độ trừu tư�
   Định nghĩa trực tiếp schema ngay tại endpoint. Cách này thân thiện với con người khi đọc lướt, nhưng tạo ra sự trùng lặp dữ liệu khổng lồ và nguy cơ bất đồng bộ khi API phát triển.
 
 * **Điểm quyết định:**  
-  Đội ngũ thiết kế phải quyết định "điểm dừng" của việc chia nhỏ component. Thông thường, một cấu trúc dữ liệu nếu được sử dụng lại từ 3 endpoint trở lên mới nên đưa vào `components`, nhưng ranh giới này rất mong manh và thường xuyên bị phá vỡ.
+  Đội ngũ thiết kế phải quyết định "điểm dừng" của việc chia nhỏ component. Thông thường, một cấu trúc dữ liệu nếu được sử dụng lại từ 3 endpoint trở lên mới nên đưa vào `components`, nhưng ranh giới này rất mong manh và thường xuy phá vỡ.
 
 ---
 
