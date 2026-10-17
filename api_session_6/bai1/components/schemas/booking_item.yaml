@@ -1,0 +1,25 @@
+type: object
+required:
+  - id
+  - booking_id
+  - room_type_id
+  - quantity
+  - price_per_night
+properties:
+  id:
+    type: string
+    example: "itm_01HAA123"
+  booking_id:
+    type: string
+    example: "bok_2026_09876"
+  room_type_id:
+    type: string
+    example: "rmt_deluxe_ocean"
+  quantity:
+    type: integer
+    minimum: 1
+    example: 1
+  price_per_night:
+    type: integer
+    minimum: 0
+    example: 1800000

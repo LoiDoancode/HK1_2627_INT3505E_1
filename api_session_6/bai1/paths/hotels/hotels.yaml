@@ -1,0 +1,71 @@
+get:
+  summary: Lấy danh sách khách sạn
+  tags:
+    - Hotels
+  parameters:
+    - name: city
+      in: query
+      required: false
+      schema:
+        type: string
+      example: "Ha Noi"
+    - name: min_star
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 5
+    - name: limit
+      in: query
+      schema:
+        type: integer
+        default: 20
+    - name: cursor
+      in: query
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Trả về danh sách khách sạn
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: "../../components/schemas/hotel.yaml"
+              page:
+                type: object
+                properties:
+                  next:
+                    type: string
+                    nullable: true
+                  more:
+                    type: boolean
+    "400":
+      $ref: "../../components/responses/400_bad_request.yaml"
+    "500":
+      $ref: "../../components/responses/500_internal_error.yaml"
+
+post:
+  summary: Đăng ký khách sạn mới
+  tags:
+    - Hotels
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../components/schemas/hotel.yaml"
+  responses:
+    "201":
+      description: Khách sạn được tạo thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/hotel.yaml"
+    "400":
+      $ref: "../../components/responses/400_bad_request.yaml"

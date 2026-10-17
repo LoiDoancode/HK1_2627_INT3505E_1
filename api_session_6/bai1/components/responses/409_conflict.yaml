@@ -1,0 +1,12 @@
+description: Xung đột dữ liệu, tài nguyên đã tồn tại hoặc trạng thái hiện tại không cho phép thao tác.
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 409
+      message: "Phòng đã có người đặt trong khoảng thời gian này"
+      timestamp: "2026-10-17T09:00:00Z"
+      details:
+        - field: "room_type_id"
+          issue: "Hạng phòng Deluxe Ocean View đã hết phòng trống từ ngày 2026-11-20 đến 2026-11-23"

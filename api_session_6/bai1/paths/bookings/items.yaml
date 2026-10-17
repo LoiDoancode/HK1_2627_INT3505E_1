@@ -1,0 +1,45 @@
+get:
+  summary: Xem chi tiết các dòng phòng đã đặt trong booking
+  tags:
+    - BookingItems
+  parameters:
+    - name: booking_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Danh sách các dòng hạng phòng đã đặt
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/booking_item.yaml"
+
+post:
+  summary: Thêm phòng vào booking hiện có
+  tags:
+    - BookingItems
+  parameters:
+    - name: booking_id
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../components/schemas/booking_item.yaml"
+  responses:
+    "201":
+      description: Thêm mục thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/booking_item.yaml"
+    "400":
+      $ref: "../../components/responses/400_bad_request.yaml"

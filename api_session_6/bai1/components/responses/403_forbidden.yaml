@@ -1,0 +1,9 @@
+description: Không có quyền truy cập vào tài nguyên này.
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 403
+      message: "Bạn không có quyền thực hiện thao tác này"
+      timestamp: "2026-10-17T09:00:00Z"

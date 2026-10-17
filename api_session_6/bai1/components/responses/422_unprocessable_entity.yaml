@@ -1,0 +1,14 @@
+description: Dữ liệu đúng cú pháp nhưng không hợp lệ về mặt logic nghiệp vụ.
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 422
+      message: "Dữ liệu không thể xử lý do vi phạm ràng buộc nghiệp vụ"
+      timestamp: "2026-10-17T09:00:00Z"
+      details:
+        - field: "check_out_date"
+          issue: "Ngày trả phòng phải sau ngày nhận phòng (check_in_date)"
+        - field: "quantity"
+          issue: "Số lượng phòng đặt phải lớn hơn 0"

@@ -1,0 +1,27 @@
+type: object
+required:
+  - id
+  - full_name
+  - email
+properties:
+  id:
+    type: string
+    example: "cus_01GAB98765"
+  full_name:
+    type: string
+    minLength: 2
+    example: "Nguyễn Văn Mười"
+  email:
+    type: string
+    format: email
+    example: "[EMAIL_ADDRESS]"
+  phone:
+    type: string
+    example: "0123456789"
+  identity_number:
+    type: string
+    example: "998877665544"
+  registered_at:
+    type: string
+    format: date-time
+    example: "2026-01-10T09:00:00Z"

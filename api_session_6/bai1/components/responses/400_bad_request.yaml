@@ -1,0 +1,14 @@
+description: Yêu cầu không hợp lệ do sai cú pháp hoặc thiếu thông tin bắt buộc.
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 400
+      message: "Dữ liệu yêu cầu không hợp lệ"
+      timestamp: "2026-10-17T09:00:00Z"
+      details:
+        - field: "name"
+          issue: "Tên khách sạn không được để trống"
+        - field: "email"
+          issue: "Email không đúng định dạng"

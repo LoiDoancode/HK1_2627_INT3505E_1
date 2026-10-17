@@ -1,0 +1,45 @@
+get:
+  summary: Xem chi tiết một item trong booking
+  tags:
+    - BookingItems
+  parameters:
+    - name: booking_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: item_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Chi tiết item
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/booking_item.yaml"
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"
+
+delete:
+  summary: Xóa một phòng khỏi booking
+  tags:
+    - BookingItems
+  parameters:
+    - name: booking_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: item_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "204":
+      description: Xóa thành công
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"

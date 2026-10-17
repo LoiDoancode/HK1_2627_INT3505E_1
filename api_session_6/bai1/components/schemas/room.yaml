@@ -1,0 +1,22 @@
+type: object
+required:
+  - id
+  - hotel_id
+  - room_type_id
+  - room_number
+properties:
+  id:
+    type: string
+    example: "rom_306_lddhtl"
+  hotel_id:
+    type: string
+    example: "lddhtl"
+  room_type_id:
+    type: string
+    example: "rmt_deluxe_ocean"
+  room_number:
+    type: string
+    example: "36"
+  floor:
+    type: integer
+    example: 3

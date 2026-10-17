@@ -1,0 +1,36 @@
+type: object
+required:
+  - id
+  - hotel_id
+  - name
+  - base_price_amount
+  - currency
+properties:
+  id:
+    type: string
+    example: "rmt_deluxe_ocean"
+  hotel_id:
+    type: string
+    example: "htl_01HXYZ1234"
+  name:
+    type: string
+    example: "Deluxe Ocean View"
+  description:
+    type: string
+    example: "Phòng hướng biển, ban công riêng."
+  base_price_amount:
+    type: integer
+    minimum: 0
+    example: 1000000
+  currency:
+    type: string
+    enum: ["VND", "USD"]
+    default: "VND"
+  max_occupancy:
+    type: integer
+    minimum: 1
+    example: 2
+  total_inventory:
+    type: integer
+    minimum: 0
+    example: 5

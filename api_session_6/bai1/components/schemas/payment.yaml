@@ -1,0 +1,35 @@
+type: object
+required:
+  - id
+  - booking_id
+  - method
+  - amount
+  - currency
+  - status
+properties:
+  id:
+    type: string
+    example: "pay_987654321"
+  booking_id:
+    type: string
+    example: "bok_2026_09876"
+  method:
+    type: string
+    enum: ["credit_card", "vnpay", "momo", "bank_transfer"]
+    example: "vnpay"
+  amount:
+    type: integer
+    minimum: 0
+    example: 5400000
+  currency:
+    type: string
+    enum: ["VND", "USD"]
+    example: "VND"
+  status:
+    type: string
+    enum: ["pending", "succeeded", "failed", "refunded"]
+    example: "succeeded"
+  paid_at:
+    type: string
+    format: date-time
+    example: "2026-10-17T09:15:00Z"

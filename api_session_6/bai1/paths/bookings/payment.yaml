@@ -1,0 +1,45 @@
+parameters:
+  - name: booking_id
+    in: path
+    required: true
+    description: ID của đơn đặt phòng
+    schema:
+      type: integer
+
+get:
+  summary: Lấy thông tin thanh toán của đơn đặt phòng
+  tags:
+    - Payments
+  responses:
+    '200':
+      description: Thông tin thanh toán
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/payment.yaml"
+    '404':
+      $ref: "../../components/responses/404_not_found.yaml"
+    '500':
+      $ref: "../../components/responses/500_internal_error.yaml"
+
+post:
+  summary: Khởi tạo/ghi nhận thanh toán cho đơn đặt phòng
+  tags:
+    - Payments
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../components/schemas/payment.yaml"
+  responses:
+    '201':
+      description: Tạo giao dịch thanh toán thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/payment.yaml"
+    '400':
+      $ref: "../../components/responses/400_bad_request.yaml"
+    '500':
+      $ref: "../../components/responses/500_internal_error.yaml"

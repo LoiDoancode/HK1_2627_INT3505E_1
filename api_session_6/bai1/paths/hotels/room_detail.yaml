@@ -1,0 +1,57 @@
+get:
+  summary: Xem chi tiết phòng vật lý
+  tags:
+    - Rooms
+  parameters:
+    - name: hotel_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: room_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Thông tin phòng
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/room.yaml"
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"
+
+patch:
+  summary: Đổi trạng thái hoạt động của phòng (dọn dẹp, bảo trì, sẵn sàng)
+  tags:
+    - Rooms
+  parameters:
+    - name: hotel_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: room_id
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            operational_status:
+              type: string
+              enum: ["active", "maintenance", "cleaning"]
+  responses:
+    "200":
+      description: Cập nhật trạng thái phòng thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/room.yaml"

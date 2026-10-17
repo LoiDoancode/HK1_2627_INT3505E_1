@@ -1,0 +1,49 @@
+get:
+  summary: Lấy danh sách các phòng vật lý của khách sạn
+  tags:
+    - Rooms
+  parameters:
+    - name: hotel_id
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: room_type_id
+      in: query
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Danh sách phòng
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/room.yaml"
+
+post:
+  summary: Thêm phòng vật lý mới
+  tags:
+    - Rooms
+  parameters:
+    - name: hotel_id
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../components/schemas/room.yaml"
+  responses:
+    "201":
+      description: Tạo phòng thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/room.yaml"
+    "400":
+      $ref: "../../components/responses/400_bad_request.yaml"

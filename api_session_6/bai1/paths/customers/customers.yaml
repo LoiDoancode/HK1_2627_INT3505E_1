@@ -1,0 +1,43 @@
+get:
+  summary: Lấy danh sách khách hàng
+  tags:
+    - Customers
+  parameters:
+    - name: email
+      in: query
+      schema:
+        type: string
+    - name: limit
+      in: query
+      schema:
+        type: integer
+        default: 20
+  responses:
+    "200":
+      description: Danh sách khách hàng
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/customer.yaml"
+
+post:
+  summary: Tạo hồ sơ khách hàng mới
+  tags:
+    - Customers
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../components/schemas/customer.yaml"
+  responses:
+    "201":
+      description: Khách hàng được tạo thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/customer.yaml"
+    "400":
+      $ref: "../../components/responses/400_bad_request.yaml"

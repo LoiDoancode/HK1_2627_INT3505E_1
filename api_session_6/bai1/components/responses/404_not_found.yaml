@@ -1,0 +1,12 @@
+description: Tài nguyên yêu cầu không tồn tại trên hệ thống.
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 404
+      message: "Không tìm thấy dữ liệu yêu cầu"
+      timestamp: "2026-10-17T09:00:00Z"
+      details:
+        - field: "hotel_id"
+          issue: "Khách sạn với ID htl_01HXYZ1234 không tồn tại"

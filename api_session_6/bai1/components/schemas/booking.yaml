@@ -1,0 +1,50 @@
+type: object
+required:
+  - id
+  - customer_id
+  - hotel_id
+  - check_in_date
+  - check_out_date
+  - total_amount
+  - currency
+  - status
+properties:
+  id:
+    type: string
+    example: "bok_2026_09876"
+  customer_id:
+    type: string
+    example: "cus_01GAB98765"
+  hotel_id:
+    type: string
+    example: "htl_01HXYZ1234"
+  check_in_date:
+    type: string
+    format: date
+    example: "2026-11-20"
+  check_out_date:
+    type: string
+    format: date
+    example: "2026-11-23"
+  total_amount:
+    type: integer
+    minimum: 0
+    example: 5400000
+  currency:
+    type: string
+    enum: ["VND", "USD"]
+    example: "VND"
+  status:
+    type: string
+    enum: ["pending", "confirmed", "checked_in", "completed", "cancelled"]
+    example: "confirmed"
+  items:
+    type: array
+    items:
+      $ref: "./booking_item.yaml"
+  payment:
+    $ref: "./payment.yaml"
+  created_at:
+    type: string
+    format: date-time
+    example: "2026-10-17T09:00:00Z"

@@ -1,0 +1,9 @@
+description: Chưa xác thực danh tính hoặc Token đã hết hạn.
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 401
+      message: "Access token không hợp lệ hoặc đã hết hạn"
+      timestamp: "2026-10-17T09:00:00Z"

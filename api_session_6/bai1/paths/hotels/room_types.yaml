@@ -1,0 +1,47 @@
+get:
+  summary: Lấy danh sách các hạng phòng của khách sạn
+  tags:
+    - RoomTypes
+  parameters:
+    - name: hotel_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Danh sách hạng phòng
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../components/schemas/room_type.yaml"
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"
+
+post:
+  summary: Thêm hạng phòng mới cho khách sạn
+  tags:
+    - RoomTypes
+  parameters:
+    - name: hotel_id
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../components/schemas/room_type.yaml"
+  responses:
+    "201":
+      description: Tạo hạng phòng thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/room_type.yaml"
+    "400":
+      $ref: "../../components/responses/400_bad_request.yaml"

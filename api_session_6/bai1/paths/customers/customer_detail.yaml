@@ -1,0 +1,45 @@
+get:
+  summary: Xem chi tiết hồ sơ khách hàng
+  tags:
+    - Customers
+  parameters:
+    - name: customer_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Hồ sơ khách hàng
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/customer.yaml"
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"
+
+patch:
+  summary: Cập nhật thông tin liên lạc của khách hàng
+  tags:
+    - Customers
+  parameters:
+    - name: customer_id
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../components/schemas/customer.yaml"
+  responses:
+    "200":
+      description: Cập nhật thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/customer.yaml"
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"

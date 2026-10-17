@@ -1,0 +1,9 @@
+description: Lỗi máy chủ nội bộ.
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 500
+      message: "Lỗi hệ thống nội bộ, vui lòng thử lại sau"
+      timestamp: "2026-10-17T09:00:00Z"

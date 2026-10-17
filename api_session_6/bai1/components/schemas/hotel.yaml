@@ -1,0 +1,20 @@
+type: object
+required:
+  - id
+  - name
+properties:
+  id:
+    type: string
+    example: "htl_01HXYZ1234"
+  name:
+    type: string
+    min_length: 3
+    max_length: 100
+    example: "LDD Hotel"
+  address:
+    type: string
+    example: "so 69 ngo 59 me tri, nam tu liem, ha noi"
+  created_at:
+    type: string
+    format: date
+    example: "2026-10-17T09:00:00"

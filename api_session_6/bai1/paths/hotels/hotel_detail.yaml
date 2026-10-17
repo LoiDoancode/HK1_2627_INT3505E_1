@@ -1,0 +1,63 @@
+get:
+  summary: Xem thông tin chi tiết 1 khách sạn
+  tags:
+    - Hotels
+  parameters:
+    - name: hotel_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Chi tiết khách sạn
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/hotel.yaml"
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"
+
+put:
+  summary: Cập nhật thông tin khách sạn
+  tags:
+    - Hotels
+  parameters:
+    - name: hotel_id
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../components/schemas/hotel.yaml"
+  responses:
+    "200":
+      description: Cập nhật thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/hotel.yaml"
+    "400":
+      $ref: "../../components/responses/400_bad_request.yaml"
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"
+
+delete:
+  summary: Xóa một khách sạn
+  tags:
+    - Hotels
+  parameters:
+    - name: hotel_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "204":
+      description: Xóa khách sạn thành công (No Content)
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"

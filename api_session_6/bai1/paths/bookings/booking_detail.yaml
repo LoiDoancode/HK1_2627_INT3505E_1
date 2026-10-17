@@ -1,0 +1,49 @@
+get:
+  summary: Tra cứu chi tiết một đơn đặt phòng
+  tags:
+    - Bookings
+  parameters:
+    - name: booking_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Thông tin đầy đủ đơn booking
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/booking.yaml"
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"
+
+patch:
+  summary: Đổi trạng thái booking (Hủy, Check-in, Hoàn tất)
+  tags:
+    - Bookings
+  parameters:
+    - name: booking_id
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              enum: ["cancelled", "checked_in", "completed"]
+  responses:
+    "200":
+      description: Cập nhật trạng thái thành công
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/booking.yaml"
+    "404":
+      $ref: "../../components/responses/404_not_found.yaml"

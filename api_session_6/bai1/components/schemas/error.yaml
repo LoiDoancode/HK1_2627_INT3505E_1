@@ -1,0 +1,37 @@
+type: object
+description: Cấu trúc phản hồi lỗi chuẩn hệ thống (theo chuẩn api_session_5)
+required:
+  - code
+  - message
+  - timestamp
+properties:
+  code:
+    type: integer
+    description: Mã trạng thái HTTP hoặc mã lỗi hệ thống
+    example: 400
+  message:
+    type: string
+    description: Thông điệp giải thích lỗi
+    example: "Dữ liệu yêu cầu không hợp lệ"
+  timestamp:
+    type: string
+    format: date-time
+    description: Thời điểm phát sinh lỗi
+    example: "2026-10-17T09:00:00Z"
+  details:
+    type: array
+    description: Danh sách chi tiết lỗi theo từng trường dữ liệu (nếu có)
+    items:
+      type: object
+      required:
+        - field
+        - issue
+      properties:
+        field:
+          type: string
+          description: Tên trường bị lỗi
+          example: "name"
+        issue:
+          type: string
+          description: Chi tiết lỗi phát sinh
+          example: "Tên khách sạn không được để trống"
