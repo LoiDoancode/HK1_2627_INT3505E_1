@@ -1,0 +1,650 @@
+{
+	"info": {
+		"_postman_id": "b2f67890-4c31-4821-b3b5-7c0500e57201",
+		"name": "Bookstore API - Pagination & Filtering (Bài 2)",
+		"description": "Postman Collection kiểm tra các tính năng của Bài 2: Offset pagination, Cursor pagination, Filter theo genre, Sort multi-key, và Error Handling.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Offset Pagination",
+			"item": [
+				{
+					"name": "1.1. Offset - Lấy trang đầu (offset=0, limit=10)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Strategy is offset\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.pagination.strategy).to.eql(\"offset\");",
+									"    pm.expect(jsonData.data.length).to.be.at.most(10);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=offset&offset=0&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "offset",
+									"description": "Chiến lược phân trang"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Vị trí bắt đầu"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Số lượng bản ghi mỗi trang"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.2. Offset - Lấy trang tiếp theo (offset=10, limit=10)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=offset&offset=10&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "offset"
+								},
+								{
+									"key": "offset",
+									"value": "10"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.3. Offset - Lấy trang cuối cùng (offset=90, limit=10)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Check has_next is false at last page\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.pagination.has_next).to.eql(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=offset&offset=90&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "offset"
+								},
+								{
+									"key": "offset",
+									"value": "90"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Cursor Pagination",
+			"item": [
+				{
+					"name": "2.1. Cursor - Lấy trang đầu tiên (Lưu next_cursor tự động)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Has next_cursor\", function () {",
+									"    pm.expect(jsonData.pagination.next_cursor).to.not.be.null;",
+									"});",
+									"",
+									"if (jsonData.pagination && jsonData.pagination.next_cursor) {",
+									"    pm.collectionVariables.set(\"next_cursor\", jsonData.pagination.next_cursor);",
+									"    console.log(\"Saved next_cursor:\", jsonData.pagination.next_cursor);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=cursor&limit=10&sort=-id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "cursor"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.2. Cursor - Lấy trang kế tiếp bằng next_cursor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"if (jsonData.pagination && jsonData.pagination.next_cursor) {",
+									"    pm.collectionVariables.set(\"next_cursor\", jsonData.pagination.next_cursor);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=cursor&limit=10&sort=-id&cursor={{next_cursor}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "cursor"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "-id"
+								},
+								{
+									"key": "cursor",
+									"value": "{{next_cursor}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Filter theo Genre",
+			"item": [
+				{
+					"name": "3.1. Filter genre: 'tech' (Technology)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"All books have category tech\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.data.forEach(function(book) {",
+									"        pm.expect(book.category.slug).to.eql(\"tech\");",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=offset&genre=tech&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "offset"
+								},
+								{
+									"key": "genre",
+									"value": "tech"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3.2. Filter genre: 'business' (Business)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=offset&genre=business&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "offset"
+								},
+								{
+									"key": "genre",
+									"value": "business"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Sort Multi-key",
+			"item": [
+				{
+					"name": "4.1. Sort đa khóa: price,-id (Giá tăng dần, ID giảm dần)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Prices are in ascending order\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var prices = jsonData.data.map(function(b) { return b.price.amount; });",
+									"    for (var i = 1; i < prices.length; i++) {",
+									"        pm.expect(prices[i]).to.be.at.least(prices[i - 1]);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=offset&limit=20&sort=price,-id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "offset"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "price,-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.2. Sort giảm dần theo giá: -price",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=offset&limit=10&sort=-price",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "offset"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "-price"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Validation & Error Handling",
+			"item": [
+				{
+					"name": "5.1. Báo lỗi Sort Mismatch khi đổi sort giữa chừng lúc dùng Cursor (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error code is sort_mismatch\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.error).to.eql(\"sort_mismatch\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=cursor&limit=10&sort=-price&cursor={{next_cursor}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "cursor"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "-price"
+								},
+								{
+									"key": "cursor",
+									"value": "{{next_cursor}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.2. Báo lỗi trường Sort không nằm trong whitelist (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Contains invalid sort field message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.include(\"Trường sắp xếp không hợp lệ\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?sort=password_hash",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "password_hash"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.3. Báo lỗi khi truyền Strategy không hợp lệ (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message indicates unsupported strategy\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.include(\"không hỗ trợ\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/books?strategy=keyset_invalid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"books"
+							],
+							"query": [
+								{
+									"key": "strategy",
+									"value": "keyset_invalid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "next_cursor",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
