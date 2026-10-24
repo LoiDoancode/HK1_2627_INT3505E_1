@@ -1,0 +1,17 @@
+type: object
+required:
+  - email
+  - password
+properties:
+  email:
+    type: string
+    format: email
+    example: "alice@socialnetwork.vn"
+    description: Địa chỉ email tài khoản đã đăng ký
+  password:
+    type: string
+    format: password
+    minLength: 8
+    maxLength: 128
+    example: "StrongP@ssw0rd!2026"
+    description: Mật khẩu tài khoản (tối thiểu 8 ký tự)

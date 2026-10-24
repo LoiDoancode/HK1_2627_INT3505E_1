@@ -1,0 +1,23 @@
+type: object
+required:
+  - access_token
+  - refresh_token
+  - token_type
+  - expires_in
+properties:
+  access_token:
+    type: string
+    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6MTY5ODExMjAwMH0..."
+    description: JSON Web Token dùng để xác thực cho các request tiếp theo
+  refresh_token:
+    type: string
+    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6MTY5ODcxMjAwMH0..."
+    description: Token dùng để đổi lấy access token mới khi token cũ hết hạn
+  token_type:
+    type: string
+    example: "Bearer"
+    description: Loại token xác thực (mặc định là Bearer)
+  expires_in:
+    type: integer
+    example: 600
+    description: Thời gian sống của access_token tính bằng giây (ví dụ 600s = 10 phút)

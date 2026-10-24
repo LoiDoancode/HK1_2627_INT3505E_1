@@ -1,0 +1,48 @@
+type: object
+required:
+  - id
+  - author
+  - content
+  - privacy
+  - created_at
+  - likes_count
+  - comments_count
+properties:
+  id:
+    type: string
+    format: uuid
+    example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+    description: Định danh duy nhất của bài viết
+  author:
+    $ref: "./author.yaml"
+  content:
+    type: string
+    example: "Hôm nay thời tiết đẹp quá, chia sẻ đồ án SOA xong rồi!"
+    description: Nội dung văn bản của bài viết
+  media_urls:
+    type: array
+    items:
+      type: string
+      format: uri
+    example:
+      - "https://cdn.socialnetwork.vn/posts/sunset.jpg"
+    description: Danh sách đường dẫn ảnh/video đính kèm
+  privacy:
+    type: string
+    enum: [PUBLIC, FRIENDS, PRIVATE]
+    example: "PUBLIC"
+    description: Mức độ hiển thị của bài viết
+  created_at:
+    type: string
+    format: date-time
+    example: "2026-10-24T08:30:00Z"
+  updated_at:
+    type: string
+    format: date-time
+    example: "2026-10-24T08:35:00Z"
+  likes_count:
+    type: integer
+    example: 42
+  comments_count:
+    type: integer
+    example: 7

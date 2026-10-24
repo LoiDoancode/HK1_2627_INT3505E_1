@@ -1,0 +1,22 @@
+type: object
+description: Thông tin công khai của tác giả (tuyệt đối không lộ email, SĐT, hash mật khẩu)
+required:
+  - id
+  - username
+  - display_name
+  - avatar_url
+properties:
+  id:
+    type: string
+    format: uuid
+    example: "4fa85f64-5717-4562-b3fc-2c963f66afa6"
+  username:
+    type: string
+    example: "alice_nguyen"
+  display_name:
+    type: string
+    example: "Nguyễn Thị Alice"
+  avatar_url:
+    type: string
+    format: uri
+    example: "https://cdn.socialnetwork.vn/avatars/alice.png"

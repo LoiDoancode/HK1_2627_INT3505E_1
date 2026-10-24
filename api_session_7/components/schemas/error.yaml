@@ -1,0 +1,27 @@
+type: object
+required:
+  - code
+  - error
+  - message
+  - timestamp
+properties:
+  code:
+    type: integer
+    example: 401
+    description: Mã lỗi HTTP tương ứng
+  error:
+    type: string
+    example: "UNAUTHORIZED"
+    description: Mã định danh lỗi dạng chuỗi máy đọc được
+  message:
+    type: string
+    example: "Thông tin xác thực không chính xác hoặc đã hết hạn"
+    description: Thông báo lỗi an toàn cho người dùng cuối
+  timestamp:
+    type: string
+    format: date-time
+    example: "2026-10-24T08:45:00Z"
+  trace_id:
+    type: string
+    example: "trace-401-sec456"
+    description: Mã theo vết lỗi trên hệ thống log nội bộ (không rò rỉ stack trace)

@@ -1,0 +1,32 @@
+type: object
+required:
+  - code
+  - error
+  - message
+  - errors
+  - timestamp
+properties:
+  code:
+    type: integer
+    example: 422
+  error:
+    type: string
+    example: "VALIDATION_FAILED"
+  message:
+    type: string
+    example: "Dữ liệu gửi lên không đúng định dạng yêu cầu"
+  errors:
+    type: array
+    items:
+      type: object
+      properties:
+        field:
+          type: string
+          example: "email"
+        issue:
+          type: string
+          example: "Email không đúng định dạng hợp lệ"
+  timestamp:
+    type: string
+    format: date-time
+    example: "2026-10-24T08:45:00Z"
