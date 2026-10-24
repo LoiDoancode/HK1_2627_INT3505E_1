@@ -1,0 +1,196 @@
+openapi: 3.0.3
+info:
+  title: Social Network API - Authentication & Posts Service
+  description: |
+    Tài liệu đặc tả OpenAPI 3.0 cho Social Network API phục vụ bài tập buổi 7.
+    Gồm 3 endpoint cốt lõi:
+      - `POST /auth/login`: Xác thực tài khoản người dùng, cấp JWT tokens.
+      - `POST /auth/refresh`: Cấp mới token sử dụng Refresh Token Rotation (RTR).
+      - `GET /posts/{id}`: Truy xuất thông tin bài viết với kiểm tra phân quyền (BOLA/IDOR).
+  version: 1.0.0
+  contact:
+    name: API Support Team
+    email: api-support@socialnetwork.local
+
+servers:
+  - url: /api/v1
+    description: Máy chủ hiện tại (Relative URL - tránh lỗi CORS)
+  - url: http://localhost:5000/api/v1
+    description: Máy chủ phát triển cục bộ (Local Development Server)
+  - url: https://api.socialnetwork.local/v1
+    description: Máy chủ môi trường Production
+
+tags:
+  - name: Authentication
+    description: Các endpoint quản lý xác thực và phiên làm việc
+  - name: Posts
+    description: Các endpoint quản lý bài viết và nội dung người dùng
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Đăng nhập tài khoản và nhận cặp Token xác thực
+      description: |
+        - **Scope yêu cầu:** `None` (Public Endpoint).
+        - **Status Codes:** 200 (OK), 400 (Bad Request), 401 (Unauthorized), 403 (Forbidden), 422 (Unprocessable), 429 (Too Many Requests), 500 (Internal Error).
+      operationId: loginUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Đăng nhập thành công, trả về cặp token hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSuccessResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Cấp mới Access Token bằng Refresh Token
+      description: |
+        - **Scope yêu cầu:** Sử dụng `refresh_token` trong Body (tương đương scope `auth:refresh`).
+        - **Cơ chế:** Áp dụng Refresh Token Rotation (RTR) và Token Reuse Detection.
+        - **Status Codes:** 200 (OK), 400 (Bad Request), 401 (Unauthorized), 403 (Forbidden), 429 (Too Many Requests), 500 (Internal Error).
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequest"
+      responses:
+        "200":
+          description: Cấp mới access token và refresh token thành công.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSuccessResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /posts/{id}:
+    get:
+      tags:
+        - Posts
+      summary: Lấy thông tin chi tiết của một bài viết theo ID
+      description: |
+        - **Scope yêu cầu:** `posts:read` (Bearer Token).
+        - **Kiểm tra BOLA/IDOR:** Bài viết `PRIVATE` hoặc `FRIENDS` yêu cầu caller có quyền xem; nếu không có quyền, trả 404 để chống đoán ID.
+        - **Status Codes:** 200 (OK), 400 (Bad Request), 401 (Unauthorized), 403 (Forbidden), 404 (Not Found), 429 (Too Many Requests), 500 (Internal Error).
+      operationId: getPostById
+      security:
+        - BearerAuth: []
+        - OAuth2Auth:
+            - "posts:read"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Định danh duy nhất của bài viết (chuẩn UUID v4).
+          schema:
+            type: string
+            format: uuid
+            example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+      responses:
+        "200":
+          description: Lấy dữ liệu bài viết thành công (đã khử dữ liệu nhạy cảm của tác giả).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostDetailResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Header: Authorization: Bearer <access_token>"
+
+    OAuth2Auth:
+      type: oauth2
+      description: Phân quyền theo Scope
+      flows:
+        password:
+          tokenUrl: /api/v1/auth/login
+          refreshUrl: /api/v1/auth/refresh
+          scopes:
+            "posts:read": Cho phép đọc bài viết công khai và bạn bè
+            "posts:write": Cho phép tạo mới, sửa hoặc xóa bài viết cá nhân
+            "auth:refresh": Cho phép làm mới access token
+
+  # Tách Schemas thành các tệp dùng chung
+  schemas:
+    LoginRequest:
+      $ref: "./components/schemas/login_request.yaml"
+    RefreshTokenRequest:
+      $ref: "./components/schemas/refresh_request.yaml"
+    AuthSuccessResponse:
+      $ref: "./components/schemas/auth_response.yaml"
+    AuthorSummary:
+      $ref: "./components/schemas/author.yaml"
+    PostDetailResponse:
+      $ref: "./components/schemas/post.yaml"
+    ErrorResponse:
+      $ref: "./components/schemas/error.yaml"
+    ValidationErrorResponse:
+      $ref: "./components/schemas/validation_error.yaml"
+
+  # Tách Responses chuẩn thành các tệp dùng chung
+  responses:
+    BadRequestError:
+      $ref: "./components/responses/400_bad_request.yaml"
+    UnauthorizedError:
+      $ref: "./components/responses/401_unauthorized.yaml"
+    ForbiddenError:
+      $ref: "./components/responses/403_forbidden.yaml"
+    NotFoundError:
+      $ref: "./components/responses/404_not_found.yaml"
+    ValidationError:
+      $ref: "./components/responses/422_unprocessable_entity.yaml"
+    TooManyRequestsError:
+      $ref: "./components/responses/429_too_many_requests.yaml"
+    InternalServerError:
+      $ref: "./components/responses/500_internal_error.yaml"
