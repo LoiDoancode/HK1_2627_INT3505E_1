@@ -1,0 +1,17 @@
+description: Gửi quá số lượng request cho phép trong khoảng thời gian quy định (Rate Limiting)
+headers:
+  Retry-After:
+    description: Số giây máy khách cần đợi trước khi thực hiện request tiếp theo
+    schema:
+      type: integer
+      example: 60
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 429
+      error: "TOO_MANY_REQUESTS"
+      message: "Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau 60 giây."
+      timestamp: "2026-10-24T08:45:00Z"
+      trace_id: "trace-429-limit"

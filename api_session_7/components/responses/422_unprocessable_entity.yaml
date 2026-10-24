@@ -1,0 +1,15 @@
+description: Lỗi kiểm tra hợp lệ dữ liệu đầu vào (Validation Error)
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/validation_error.yaml"
+    example:
+      code: 422
+      error: "VALIDATION_FAILED"
+      message: "Dữ liệu gửi lên không thỏa mãn các điều kiện ràng buộc"
+      errors:
+        - field: "email"
+          issue: "Email không đúng định dạng RFC 5322"
+        - field: "password"
+          issue: "Mật khẩu phải chứa ít nhất 8 ký tự"
+      timestamp: "2026-10-24T08:45:00Z"

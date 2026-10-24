@@ -1,0 +1,11 @@
+description: Không tìm thấy tài nguyên theo định danh được yêu cầu
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 404
+      error: "NOT_FOUND"
+      message: "Không tìm thấy bài viết hoặc bài viết không tồn tại"
+      timestamp: "2026-10-24T08:45:00Z"
+      trace_id: "trace-404-ghi101"

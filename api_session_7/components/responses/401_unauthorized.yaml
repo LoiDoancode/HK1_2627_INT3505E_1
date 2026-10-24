@@ -1,0 +1,11 @@
+description: Chưa xác thực danh tính, sai thông tin đăng nhập hoặc token đã hết hạn
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 401
+      error: "UNAUTHORIZED"
+      message: "Tài khoản hoặc mật khẩu không chính xác"
+      timestamp: "2026-10-24T08:45:00Z"
+      trace_id: "trace-401-sec456"

@@ -1,0 +1,11 @@
+description: Không có quyền truy cập tài nguyên (thiếu Scope, bài viết riêng tư, hoặc tài khoản bị khóa)
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 403
+      error: "FORBIDDEN"
+      message: "Bạn không có quyền truy cập hoặc thực thi tài nguyên này"
+      timestamp: "2026-10-24T08:45:00Z"
+      trace_id: "trace-403-def789"

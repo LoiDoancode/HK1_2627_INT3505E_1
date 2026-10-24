@@ -1,0 +1,11 @@
+description: Lỗi nội bộ không xác định từ máy chủ
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/error.yaml"
+    example:
+      code: 500
+      error: "INTERNAL_SERVER_ERROR"
+      message: "Hệ thống đang gặp sự cố nội bộ. Vui lòng thử lại sau."
+      timestamp: "2026-10-24T08:45:00Z"
+      trace_id: "trace-500-fatal"
