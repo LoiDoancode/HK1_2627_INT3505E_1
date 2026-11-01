@@ -101,11 +101,6 @@ def test_get_order_eager_loading_prevents_n_plus_one(client, sample_products, qu
                 assert "name" in item["product"]
 
     # 3. Khẳng định số truy vấn SQL:
-    # 1 query: SELECT count() (cho phân trang)
-    # 1 query: SELECT orders
-    # 1 query: SELECT order_items WHERE order_id IN (...)
-    # 1 query: SELECT products WHERE id IN (...)
-    # Tổng cộng chỉ 4 câu truy vấn cố định, KHÔNG PHẢI 1 + 3*(1 + 3) = 13 câu truy vấn nếu bị bẫy N+1!
     print(f"\n[EAGER LOADING TEST] Số câu truy vấn SELECT phát ra: {qc.count}")
     for idx, sql in enumerate(qc.statements, 1):
         print(f"Query {idx}: {sql.strip()[:100]}...")

@@ -3,7 +3,6 @@ import sys
 import pytest
 from sqlalchemy import event
 
-# Thêm thư mục api_session_8 vào PYTHONPATH để test runner tìm thấy các module
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if base_dir not in sys.path:
     sys.path.insert(0, base_dir)

@@ -10,7 +10,7 @@ health_bp = Blueprint("health", __name__, url_prefix="")
 @health_bp.get("/healthz")
 def liveness():
     """
-    Liveness Probe (Slide 34 & 35): 'Tôi còn sống không?'
+    Liveness Probe: 'Tôi còn sống không?'
     Probe siêu nhẹ, không phụ thuộc vào Database hay tài nguyên bên ngoài.
     Trả về HTTP 200 khi tiến trình service đang hoạt động.
     """
@@ -19,7 +19,7 @@ def liveness():
 @health_bp.get("/ready")
 def readiness():
     """
-    Readiness Probe (Slide 34 & 35): 'Tôi nhận traffic được chưa?'
+    Readiness Probe: 'Tôi nhận traffic được chưa?'
     Kiểm tra kết nối tới cơ sở dữ liệu.
     Trả về HTTP 200 nếu sẵn sàng nhận request, hoặc 503 nếu dependency bị lỗi.
     """

@@ -29,7 +29,7 @@ def create_app(config=None):
     app = Flask(__name__)
     app.config.from_object(config or DefaultConfig)
 
-    # Đọc thêm biến môi trường dạng APP_* (Slide 31)
+    # Đọc thêm biến môi trường dạng APP_*
     app.config.from_prefixed_env("APP")
 
     # 1. Cấu hình structured logging

@@ -1,8 +1,6 @@
-# ==========================================
-# Docker Compose Stack cho Backend Service (Slide 39)
+
 # Tự động khởi tạo database PostgreSQL và service API
 # Khởi động chỉ bằng lệnh: docker compose up --build
-# ==========================================
 
 services:
   db:

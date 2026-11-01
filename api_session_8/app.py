@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Đảm bảo import được kể cả khi chạy trực tiếp `python app.py` hoặc chạy từ thư mục gốc
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)

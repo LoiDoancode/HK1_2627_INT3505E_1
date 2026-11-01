@@ -5,7 +5,7 @@ except ImportError:
     HAS_MARSHMALLOW = False
 
 if HAS_MARSHMALLOW:
-    # ─── OUTPUT SCHEMA ───
+    #  OUTPUT SCHEMA
     class ProductOut(Schema):
         id = fields.Int()
         sku = fields.Str()
@@ -14,10 +14,10 @@ if HAS_MARSHMALLOW:
         price_cents = fields.Int()
         qty_in_stock = fields.Int()
         archived = fields.Bool()
-        created_at = fields.DateTime(dump_only=True)
-        updated_at = fields.DateTime(dump_only=True)
+        created_at = fields.DateTime(dump_only=True, allow_none=True)
+        updated_at = fields.DateTime(dump_only=True, allow_none=True)
 
-    # ─── INPUT TẠO MỚI (Slide 24 & 30) ───
+    # INPUT TẠO MỚI
     class ProductIn(Schema):
         sku = fields.Str(
             required=True,
@@ -45,7 +45,7 @@ if HAS_MARSHMALLOW:
             if not value or value.strip() == "":
                 raise ValidationError("Tên sản phẩm không được để trống")
 
-    # ─── INPUT CẬP NHẬT PARTIAL ───
+    # INPUT CẬP NHẬT PARTIAL 
     class ProductPatch(Schema):
         name = fields.Str(validate=validate.Length(min=1, max=255))
         description = fields.Str(allow_none=True)
@@ -57,7 +57,7 @@ if HAS_MARSHMALLOW:
             if value is not None and value.strip() == "":
                 raise ValidationError("Tên sản phẩm không được để trống")
 
-    # ─── /RESERVE SCHEMA ───
+    # /RESERVE SCHEMA 
     class ReserveIn(Schema):
         qty = fields.Int(
             required=True,

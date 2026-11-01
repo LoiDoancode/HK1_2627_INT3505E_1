@@ -4,6 +4,14 @@ try:
 except ImportError:
     HAS_MARSHMALLOW = False
 
+try:
+    from .product_schema import ProductOut
+except (ImportError, ValueError):
+    try:
+        from schemas.product_schema import ProductOut
+    except (ImportError, ValueError):
+        ProductOut = None
+
 if HAS_MARSHMALLOW:
     class OrderItemIn(Schema):
         product_id = fields.Int(required=True)
@@ -36,7 +44,7 @@ if HAS_MARSHMALLOW:
         quantity = fields.Int()
         unit_price_cents = fields.Int()
         subtotal_cents = fields.Int()
-        product = fields.Dict(allow_none=True)
+        product = fields.Nested(ProductOut, allow_none=True) if ProductOut else fields.Dict(allow_none=True)
 
     class OrderOut(Schema):
         id = fields.Int()
@@ -44,7 +52,7 @@ if HAS_MARSHMALLOW:
         customer_email = fields.Str(allow_none=True)
         status = fields.Str()
         total_amount_cents = fields.Int()
-        created_at = fields.DateTime(dump_only=True)
+        created_at = fields.DateTime(dump_only=True, allow_none=True)
         items = fields.List(fields.Nested(OrderItemOut))
 
 else:

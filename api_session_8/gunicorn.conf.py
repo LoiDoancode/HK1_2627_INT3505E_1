@@ -1,4 +1,4 @@
-# Cấu hình Gunicorn WSGI Server Production (Slide 37)
+# Cấu hình Gunicorn WSGI Server Production
 bind = "0.0.0.0:5000"
 workers = 2
 worker_class = "sync"
