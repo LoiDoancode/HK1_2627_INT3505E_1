@@ -28,11 +28,29 @@ class Product(db.Model):
     qty_in_stock: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     archived: Mapped[bool] = mapped_column(Boolean, default=False, index=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, server_default=func.now(), nullable=False
+        DateTime, default=datetime.utcnow, server_default=func.now(), nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
+        DateTime, default=datetime.utcnow, server_default=func.now(), onupdate=datetime.utcnow, nullable=False
     )
+
+    def __init__(
+        self,
+        sku: str = "",
+        name: str = "",
+        price_cents: int = 0,
+        qty_in_stock: int = 0,
+        description: Optional[str] = None,
+        archived: bool = False,
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.sku = sku
+        self.name = name
+        self.price_cents = price_cents
+        self.qty_in_stock = qty_in_stock
+        self.description = description
+        self.archived = archived
 
     def to_dict(self):
         return {

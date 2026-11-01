@@ -4,8 +4,10 @@ from sqlalchemy import String, Integer, DateTime, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 try:
     from ..extensions import db
+    from .product import Product
 except (ImportError, ValueError):
     from extensions import db
+    from models.product import Product
 
 class Order(db.Model):
     """
@@ -21,7 +23,7 @@ class Order(db.Model):
     status: Mapped[str] = mapped_column(String(50), default="COMPLETED", nullable=False)
     total_amount_cents: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, server_default=func.now(), nullable=False
+        DateTime, default=datetime.utcnow, server_default=func.now(), nullable=False
     )
 
     # Quan hệ 1-N với OrderItem
@@ -31,6 +33,23 @@ class Order(db.Model):
         cascade="all, delete-orphan",
         order_by="OrderItem.id"
     )
+
+    def __init__(
+        self,
+        customer_name: str = "",
+        customer_email: Optional[str] = None,
+        status: str = "COMPLETED",
+        total_amount_cents: int = 0,
+        items: Optional[List["OrderItem"]] = None,
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.customer_name = customer_name
+        self.customer_email = customer_email
+        self.status = status
+        self.total_amount_cents = total_amount_cents
+        if items is not None:
+            self.items = items
 
     def to_dict(self):
         return {
@@ -63,6 +82,28 @@ class OrderItem(db.Model):
     # Relationships
     order: Mapped["Order"] = relationship("Order", back_populates="items")
     product: Mapped["Product"] = relationship("Product")
+
+    def __init__(
+        self,
+        product_id: int = 0,
+        quantity: int = 0,
+        unit_price_cents: int = 0,
+        product: Optional["Product"] = None,
+        order_id: Optional[int] = None,
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.product_id = product_id
+        self.quantity = quantity
+        self.unit_price_cents = unit_price_cents
+        if product is not None:
+            self.product = product
+        if order_id is not None:
+            self.order_id = order_id
+
+    @property
+    def subtotal_cents(self) -> int:
+        return self.quantity * self.unit_price_cents
 
     def to_dict(self):
         data = {

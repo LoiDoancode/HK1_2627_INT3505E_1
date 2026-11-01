@@ -78,6 +78,7 @@ def create_order():
         total_amount_cents += subtotal
 
         order_item = OrderItem(
+            product=product,
             product_id=product.id,
             quantity=qty,
             unit_price_cents=product.price_cents

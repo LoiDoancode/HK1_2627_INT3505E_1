@@ -1,4 +1,5 @@
 import os
+from sqlalchemy.pool import StaticPool
 
 class DefaultConfig:
     """Cấu hình mặc định theo 12-factor (Slide 31)"""
@@ -13,10 +14,13 @@ class DefaultConfig:
     LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
 
 class TestConfig(DefaultConfig):
-    """Cấu hình phục vụ kiểm thử pytest"""
+    """Cấu hình phục vụ kiểm thử pytest - dùng StaticPool cho in-memory SQLite"""
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
-    SQLALCHEMY_ENGINE_OPTIONS = {}
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "poolclass": StaticPool,
+        "connect_args": {"check_same_thread": False},
+    }
     LOG_LEVEL = "WARNING"
 
 class ProductionConfig(DefaultConfig):
@@ -28,4 +32,3 @@ class ProductionConfig(DefaultConfig):
         "pool_recycle": 1800,
         "pool_pre_ping": True,
     }
-
