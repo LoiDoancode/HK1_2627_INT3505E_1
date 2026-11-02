@@ -1,7 +1,6 @@
-# ==========================================
-# Dockerfile Multi-stage chuẩn production (Slide 38)
+
+# Dockerfile Multi-stage chuẩn production
 # Tách biệt builder và runtime để tối ưu kích thước image và tăng cường bảo mật
-# ==========================================
 
 # ─── Stage 1: Builder ───
 FROM python:3.11-slim AS builder
@@ -49,6 +48,6 @@ USER app
 
 EXPOSE 5000
 
-# Chạy bằng Gunicorn WSGI Server (Slide 37)
+# Chạy bằng Gunicorn WSGI Server 
 CMD ["gunicorn", "-c", "gunicorn.conf.py", "wsgi:app"]
 
