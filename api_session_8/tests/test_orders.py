@@ -62,20 +62,8 @@ def test_post_order_insufficient_stock(client, sample_products):
     assert res_p1["qty_in_stock"] == 10
 
 def test_get_order_eager_loading_prevents_n_plus_one(client, sample_products, query_counter):
-    """
-    Test Bài tập 5: GET endpoint có EAGER LOADING và kiểm tra số truy vấn để phát hiện N+1 (Slide 18, 19, 40)
-    
-    Kịch bản:
-    - Tạo 3 đơn hàng, mỗi đơn hàng chứa nhiều OrderItem liên kết các Product.
-    - Gọi GET /api/v1/orders để lấy danh sách đơn hàng kèm chi tiết items và product.
-    - Với bẫy N+1 (Lazy loading): Số câu query SQL sẽ tăng theo số đơn hàng và items:
-      1 (lấy orders) + N (lấy items) + M (lấy products) => hàng chục queries!
-    - Với Eager Loading (selectinload): Số câu query SQL là HẰNG SỐ (chỉ 2 hoặc 3 queries)
-      dù danh sách có bao nhiêu đơn hàng!
-    """
+    """Test: GET endpoint có EAGER LOADING và kiểm tra số truy vấn để phát hiện N+1 (Slide 18, 19, 40)"""
     p1, p2, p3 = sample_products
-
-    # 1. Tạo 3 đơn hàng
     for i in range(3):
         client.post("/api/v1/orders", json={
             "customer_name": f"Khách hàng {i+1}",
@@ -86,7 +74,7 @@ def test_get_order_eager_loading_prevents_n_plus_one(client, sample_products, qu
             ]
         })
 
-    # 2. Đo số câu truy vấn khi gọi GET /api/v1/orders
+    #Đo số câu truy vấn khi gọi GET /api/v1/orders
     with query_counter as qc:
         res = client.get("/api/v1/orders?page=1&size=10")
         assert res.status_code == 200
@@ -100,7 +88,6 @@ def test_get_order_eager_loading_prevents_n_plus_one(client, sample_products, qu
                 assert "product" in item
                 assert "name" in item["product"]
 
-    # 3. Khẳng định số truy vấn SQL:
     print(f"\n[EAGER LOADING TEST] Số câu truy vấn SELECT phát ra: {qc.count}")
     for idx, sql in enumerate(qc.statements, 1):
         print(f"Query {idx}: {sql.strip()[:100]}...")
@@ -108,15 +95,12 @@ def test_get_order_eager_loading_prevents_n_plus_one(client, sample_products, qu
     assert qc.count <= 6, f"Phát hiện bẫy N+1 query! Số query thực thi: {qc.count}"
 
 def test_healthz_and_ready_probes(client):
-    """
-    Test Bài tập 4: Kiểm tra 2 probe /healthz và /ready riêng biệt (Slide 34 & 35)
-    """
-    # 1. Liveness Probe
+    # Liveness Probe
     res_liveness = client.get("/healthz")
     assert res_liveness.status_code == 200
     assert res_liveness.get_json() == {"status": "ok"}
 
-    # 2. Readiness Probe
+    # Readiness Probe
     res_readiness = client.get("/ready")
     assert res_readiness.status_code == 200
     data = res_readiness.get_json()

@@ -1,7 +1,7 @@
 import json
 
 def test_list_products_pagination(client, sample_products):
-    """Test 1: GET /api/v1/products có phân trang"""
+    """Test: GET /api/v1/products có phân trang"""
     res = client.get("/api/v1/products?page=1&size=2")
     assert res.status_code == 200
     data = res.get_json()
@@ -11,7 +11,7 @@ def test_list_products_pagination(client, sample_products):
     assert len(data["items"]) == 2
 
 def test_get_product_by_id_success(client, sample_products):
-    """Test 2a: GET /api/v1/products/<id> lấy sản phẩm thành công"""
+    """Test: GET /api/v1/products/<id> lấy sản phẩm thành công"""
     pid = sample_products[0]
     res = client.get(f"/api/v1/products/{pid}")
     assert res.status_code == 200
@@ -20,14 +20,14 @@ def test_get_product_by_id_success(client, sample_products):
     assert data["sku"] == "IPHONE-15"
 
 def test_get_product_not_found(client):
-    """Test 2b: GET /api/v1/products/<id> 404 nếu không tìm thấy"""
+    """Test: GET /api/v1/products/<id> 404 nếu không tìm thấy"""
     res = client.get("/api/v1/products/99999")
     assert res.status_code == 404
     data = res.get_json()
     assert data["code"] == "not_found"
 
 def test_create_product_success(client):
-    """Test 3a: POST /api/v1/products tạo sản phẩm thành công (201)"""
+    """Test: POST /api/v1/products tạo sản phẩm thành công (201)"""
     payload = {
         "sku": "SAMSUNG-S24",
         "name": "Samsung Galaxy S24",
@@ -43,9 +43,9 @@ def test_create_product_success(client):
     assert data["qty_in_stock"] == 15
 
 def test_create_product_duplicate_sku(client, sample_products):
-    """Test 3b: POST /api/v1/products 409 nếu trùng SKU"""
+    """Test: POST /api/v1/products 409 nếu trùng SKU"""
     payload = {
-        "sku": "IPHONE-15",  # Đã tồn tại trong fixture
+        "sku": "IPHONE-15",
         "name": "iPhone 15 Fake",
         "price_cents": 10000,
         "qty_in_stock": 1
@@ -56,7 +56,7 @@ def test_create_product_duplicate_sku(client, sample_products):
     assert data["code"] == "conflict"
 
 def test_reserve_product_success(client, sample_products):
-    """Test 4a: POST /api/v1/products/<id>/reserve đặt hàng thành công"""
+    """Test: POST /api/v1/products/<id>/reserve đặt hàng thành công"""
     pid = sample_products[0]  # Tồn kho ban đầu = 10
     res = client.post(f"/api/v1/products/{pid}/reserve", json={"qty": 3})
     assert res.status_code == 200
@@ -64,7 +64,7 @@ def test_reserve_product_success(client, sample_products):
     assert data["product"]["qty_in_stock"] == 7
 
 def test_reserve_product_out_of_stock(client, sample_products):
-    """Test 4b: POST /api/v1/products/<id>/reserve 409 nếu số lượng vượt quá tồn kho"""
+    """Test: POST /api/v1/products/<id>/reserve 409 nếu số lượng vượt quá tồn kho"""
     pid = sample_products[0]  # Tồn kho = 10
     res = client.post(f"/api/v1/products/{pid}/reserve", json={"qty": 999})
     assert res.status_code == 409
@@ -72,7 +72,7 @@ def test_reserve_product_out_of_stock(client, sample_products):
     assert data["code"] == "out_of_stock"
 
 def test_patch_product(client, sample_products):
-    """Test 5: PATCH /api/v1/products/<id> cập nhật một phần"""
+    """Test: PATCH /api/v1/products/<id> cập nhật một phần"""
     pid = sample_products[1]
     res = client.patch(f"/api/v1/products/{pid}", json={"price_cents": 119900})
     assert res.status_code == 200
@@ -81,7 +81,7 @@ def test_patch_product(client, sample_products):
     assert data["sku"] == "MACBOOK-M3"  # Các trường khác giữ nguyên
 
 def test_delete_product_soft_delete(client, sample_products):
-    """Test 6: DELETE /api/v1/products/<id> soft-delete"""
+    """Test: DELETE /api/v1/products/<id> soft-delete"""
     pid = sample_products[2]
     res = client.delete(f"/api/v1/products/{pid}")
     assert res.status_code == 204

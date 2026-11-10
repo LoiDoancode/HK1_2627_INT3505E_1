@@ -2,7 +2,7 @@ from flask import jsonify
 from werkzeug.exceptions import HTTPException
 
 class ApiError(Exception):
-    """Base class - mọi ngoại lệ nghiệp vụ kế thừa từ class này (Slide 28)"""
+    """Base class - mọi ngoại lệ nghiệp vụ kế thừa từ class này"""
     status_code = 500
     code = "internal_error"
 
@@ -32,7 +32,7 @@ class ValidationError(ApiError):
     code = "validation_error"
 
 def register_error_handlers(app):
-    """Đăng ký global error handlers cho Flask Application (Slide 29)"""
+    """Đăng ký global error handlers cho Flask Application"""
     @app.errorhandler(ApiError)
     def _handle_api_error(err):
         return jsonify({

@@ -2,7 +2,7 @@ import os
 from sqlalchemy.pool import StaticPool
 
 class DefaultConfig:
-    """Cấu hình mặc định theo 12-factor (Slide 31)"""
+    """Cấu hình mặc định theo 12-factor"""
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-not-for-prod-secret-token-32bytes")
     JSON_SORT_KEYS = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URL", "sqlite:///dev.db")
