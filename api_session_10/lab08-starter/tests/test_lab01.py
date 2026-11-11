@@ -14,6 +14,7 @@ Useful imports:
 
 Do not depend on test execution order. Fixtures: client, app, sample_book.
 """
+"Đây là file sửa vì em lỡ đẩy cả folder liền lúc mà không commit lúc clone về"
 from jsonschema import validate, ValidationError
 import pytest
 from tools import get_book_schema
