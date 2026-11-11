@@ -1,0 +1,51 @@
+extends: ["spectral:oas"]
+
+rules:
+  # Tắt các warning về style không bắt buộc của OAS
+  info-contact: off
+  operation-description: off
+  operation-tags: off
+
+  # 1. Bắt buộc có operationId
+  operation-operationId: error
+
+  # 2. Response 204 không được khai báo body/content
+  no-204-content:
+    description: "Response 204 No Content must not define a response body"
+    message: "HTTP 204 response must not have content"
+    severity: error
+    given: "$.paths[*][*].responses.204"
+    then:
+      field: content
+      function: undefined
+
+  # 3. Book.year phải có kiểu integer
+  book-year-type:
+    description: "Book.year must have integer type matching backend model"
+    message: "Book.year type must be integer"
+    severity: error
+    given: "$.components.schemas.Book.properties.year"
+    then:
+      field: type
+      function: enumeration
+      functionOptions:
+        values:
+          - integer
+
+  # Custom rule: Response 200 phải có schema hợp lệ và nhiều hơn 0 trường (properties không rỗng hoặc có items)
+  response-200-schema-not-empty:
+    description: "Response 200 must have a non-empty schema"
+    message: "Response 200 schema must define properties or items"
+    severity: error
+    given: "$.paths[*][*].responses.200.content['application/json'].schema"
+    then:
+      function: schema
+      functionOptions:
+        schema:
+          anyOf:
+            - type: object
+              required: [properties]
+            - type: object
+              required: [items]
+            - type: object
+              required: ["$ref"]

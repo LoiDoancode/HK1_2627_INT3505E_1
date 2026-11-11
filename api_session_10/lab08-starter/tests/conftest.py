@@ -1,4 +1,10 @@
 """Shared fixtures for all exercises; each test receives a fresh SQLite database."""
+import sys
+from pathlib import Path
+
+# Ensure lab08-starter root is in sys.path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import pytest
 from app import create_app
 from models import Book, db
